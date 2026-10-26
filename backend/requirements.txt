@@ -1,0 +1,9 @@
+ä*
+fastapi>=0.110,<1
+uvicorn[standard]>=0.27
+pydantic>=2.6,<3
+Pillow>=10
+pytest>=8
+httpx>=0.27
+pypdf>=5.0
+python-multipart>=0.0.9

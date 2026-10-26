@@ -1,0 +1,183 @@
+{
+  "id": "DEMO-003",
+  "label": "Risque élevé",
+  "demographics": {
+    "age": 81,
+    "sex": "Homme",
+    "copd": false,
+    "diabetes": true,
+    "heart_failure": false
+  },
+  "clinical": {
+    "temperature": 39.1,
+    "respiratory_rate": 30,
+    "heart_rate": 128,
+    "systolic_bp": 88,
+    "spo2": 86,
+    "cough": true,
+    "dyspnea": true
+  },
+  "biological": {
+    "crp": {
+      "value": 180,
+      "unit": "mg/L",
+      "reference": "< 10"
+    },
+    "leukocytes": {
+      "value": 18.5,
+      "unit": "10⁹/L",
+      "reference": "4–11"
+    },
+    "lactate": {
+      "value": 3.2,
+      "unit": "mmol/L",
+      "reference": "< 2"
+    },
+    "creatinine": {
+      "value": 130,
+      "unit": "µmol/L",
+      "reference": "45–110"
+    },
+    "procalcitonin": {
+      "value": 1.4,
+      "unit": "ng/mL",
+      "reference": "< 0.25"
+    }
+  },
+  "longitudinal": [
+    {
+      "hours": 0.0,
+      "respiratory_rate": 21.0,
+      "spo2": 94.0,
+      "heart_rate": 88.0,
+      "temperature": 37.1,
+      "crp": 25.0
+    },
+    {
+      "hours": 4.8,
+      "respiratory_rate": 21.6,
+      "spo2": 93.5,
+      "heart_rate": 88.9,
+      "temperature": 37.1,
+      "crp": 35.3
+    },
+    {
+      "hours": 9.6,
+      "respiratory_rate": 22.2,
+      "spo2": 92.9,
+      "heart_rate": 89.8,
+      "temperature": 37.1,
+      "crp": 45.7
+    },
+    {
+      "hours": 14.399999999999999,
+      "respiratory_rate": 22.8,
+      "spo2": 92.4,
+      "heart_rate": 90.7,
+      "temperature": 37.1,
+      "crp": 56.0
+    },
+    {
+      "hours": 19.2,
+      "respiratory_rate": 23.4,
+      "spo2": 91.9,
+      "heart_rate": 91.6,
+      "temperature": 37.1,
+      "crp": 66.3
+    },
+    {
+      "hours": 24.0,
+      "respiratory_rate": 24.0,
+      "spo2": 91.3,
+      "heart_rate": 92.5,
+      "temperature": 37.1,
+      "crp": 76.7
+    },
+    {
+      "hours": 28.799999999999997,
+      "respiratory_rate": 24.6,
+      "spo2": 90.8,
+      "heart_rate": 93.4,
+      "temperature": 37.1,
+      "crp": 87.0
+    },
+    {
+      "hours": 33.6,
+      "respiratory_rate": 25.2,
+      "spo2": 90.3,
+      "heart_rate": 94.3,
+      "temperature": 37.2,
+      "crp": 97.3
+    },
+    {
+      "hours": 38.4,
+      "respiratory_rate": 25.8,
+      "spo2": 89.7,
+      "heart_rate": 95.2,
+      "temperature": 37.2,
+      "crp": 107.7
+    },
+    {
+      "hours": 43.199999999999996,
+      "respiratory_rate": 26.4,
+      "spo2": 89.2,
+      "heart_rate": 96.1,
+      "temperature": 37.2,
+      "crp": 118.0
+    },
+    {
+      "hours": 48.0,
+      "respiratory_rate": 27.0,
+      "spo2": 88.7,
+      "heart_rate": 97.0,
+      "temperature": 37.2,
+      "crp": 128.3
+    },
+    {
+      "hours": 52.8,
+      "respiratory_rate": 27.6,
+      "spo2": 88.1,
+      "heart_rate": 97.9,
+      "temperature": 37.2,
+      "crp": 138.7
+    },
+    {
+      "hours": 57.599999999999994,
+      "respiratory_rate": 28.2,
+      "spo2": 87.6,
+      "heart_rate": 98.8,
+      "temperature": 37.2,
+      "crp": 149.0
+    },
+    {
+      "hours": 62.4,
+      "respiratory_rate": 28.8,
+      "spo2": 87.1,
+      "heart_rate": 99.7,
+      "temperature": 37.2,
+      "crp": 159.3
+    },
+    {
+      "hours": 67.2,
+      "respiratory_rate": 29.4,
+      "spo2": 86.5,
+      "heart_rate": 100.6,
+      "temperature": 37.2,
+      "crp": 169.7
+    },
+    {
+      "hours": 72.0,
+      "respiratory_rate": 30.0,
+      "spo2": 86.0,
+      "heart_rate": 101.5,
+      "temperature": 37.2,
+      "crp": 180.0
+    }
+  ],
+  "image": {
+    "path": "DEMO-003.png",
+    "synthetic": true,
+    "description": "Illustration graphique factice, aucune image médicale."
+  },
+  "report": "Données synthétiques générées par gabarit. Aucun patient réel."
+}

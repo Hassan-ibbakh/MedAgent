@@ -1,0 +1,88 @@
+{
+  "id": "DEMO-005",
+  "label": "Cas synthétique associé aux images de test",
+  "demographics": {
+    "age": 67,
+    "sex": "Non précisé",
+    "copd": false,
+    "diabetes": false,
+    "heart_failure": false
+  },
+  "clinical": {
+    "temperature": 38.8,
+    "respiratory_rate": 27,
+    "heart_rate": 116,
+    "systolic_bp": 105,
+    "spo2": 90,
+    "cough": true,
+    "dyspnea": true
+  },
+  "biological": {
+    "crp": {
+      "value": 126,
+      "unit": "mg/L",
+      "reference": "< 10"
+    },
+    "leukocytes": {
+      "value": 15.4,
+      "unit": "10⁹/L",
+      "reference": "4–11"
+    },
+    "lactate": {
+      "value": 2.1,
+      "unit": "mmol/L",
+      "reference": "< 2"
+    },
+    "creatinine": {
+      "value": 98,
+      "unit": "µmol/L",
+      "reference": "45–110"
+    },
+    "procalcitonin": {
+      "value": 0.6,
+      "unit": "ng/mL",
+      "reference": "< 0.25"
+    }
+  },
+  "longitudinal": [
+    {
+      "hours": 0,
+      "respiratory_rate": 21,
+      "spo2": 95,
+      "heart_rate": 96,
+      "temperature": 37.5,
+      "crp": 44
+    },
+    {
+      "hours": 24,
+      "respiratory_rate": 23,
+      "spo2": 94,
+      "heart_rate": 102,
+      "temperature": 37.9,
+      "crp": 68
+    },
+    {
+      "hours": 48,
+      "respiratory_rate": 25,
+      "spo2": 92,
+      "heart_rate": 109,
+      "temperature": 38.4,
+      "crp": 96
+    },
+    {
+      "hours": 72,
+      "respiratory_rate": 27,
+      "spo2": 90,
+      "heart_rate": 116,
+      "temperature": 38.8,
+      "crp": 126
+    }
+  ],
+  "image": {
+    "path": "test.png",
+    "paired_output_path": "test expl.png",
+    "synthetic": true,
+    "description": "Images de démonstration associées à ce scénario fictif. Les valeurs du dossier sont synthétiques et ne sont pas les données cliniques du patient représenté sur la radiographie."
+  },
+  "report": "Scénario entièrement synthétique pour démontrer le parcours des quatre agents. Les images associées sont des ressources de test et ne valident pas les données du dossier."
+}

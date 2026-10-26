@@ -1,0 +1,77 @@
+[
+  {
+    "question": "Quand l'image est-elle transmise au fournisseur distant?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "confirmation"
+  },
+  {
+    "question": "Que deviennent les modalites indisponibles?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "indisponibles"
+  },
+  {
+    "question": "Comment la synthese pond?re les indices par confiance ?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "confiance"
+  },
+  {
+    "question": "Ou restent les decisions pendant la vie du processus ?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "memoire"
+  },
+  {
+    "question": "Quels formats PDF TXT et Markdown sont accept?s ?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "Markdown"
+  },
+  {
+    "question": "Les PDF scannes sans couche texte sont-ils pris en charge ?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "scannes"
+  },
+  {
+    "question": "Quelle m?thode BM25 classe les passages ?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "BM25"
+  },
+  {
+    "question": "Le texte du dossier est-il extrait temporairement ?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "temporairement"
+  },
+  {
+    "question": "Les documents importes fondent-ils automatiquement la synthese des agents ?",
+    "source": "docs/ARCHITECTURE.md",
+    "term": "synthese"
+  },
+  {
+    "question": "Les cas disponibles sont-ils fictifs et g?n?riques ?",
+    "source": "docs/MODEL_CARD.md",
+    "term": "fictifs"
+  },
+  {
+    "question": "Les seuils sont-ils calibr?s sur une cohorte ?",
+    "source": "docs/MODEL_CARD.md",
+    "term": "calibration"
+  },
+  {
+    "question": "Le modele generaliste est-il valide en radiologie?",
+    "source": "docs/MODEL_CARD.md",
+    "term": "radiologie"
+  },
+  {
+    "question": "Python 3.11 et Node.js 18 sont-ils requis ?",
+    "source": "README.md",
+    "term": "Python 3.11"
+  },
+  {
+    "question": "Ou les d?pendances Python sont-elles isol?es .venv ?",
+    "source": "README.md",
+    "term": ".venv"
+  },
+  {
+    "question": "Quelle adresse localhost:5173 ouvrir ?",
+    "source": "README.md",
+    "term": "localhost:5173"
+  }
+]
