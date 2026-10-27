@@ -7,9 +7,9 @@ type ResearchDocument = { filename: string; extension: string; size_bytes: numbe
 type RagStatus = { provider: string; model: string | null; remote_processing: boolean; embedding_model: string | null; retrieval?: string; generation?: string };
 
 const suggestions = [
-  'Quelles recommandations les documents donnent-ils sur la pneumonie communautaire adulte ?',
-  'Quels signes et facteurs de risque sont décrits dans les sources ?',
-  'Quelles limites et précautions mentionnent les recommandations ?',
+  'Qu’est-ce qu’une pneumonie communautaire chez l’adulte ?',
+  'Quels signes cliniques et facteurs de risque peut-on rencontrer ?',
+  'Quelles sont les limites des examens biologiques et de l’imagerie ?',
 ];
 
 export default function ChatPanel() {
@@ -132,7 +132,7 @@ export default function ChatPanel() {
         <div>
           <div className="eyebrow"><Sparkles size={15} /> RÉFÉRENTIELS ET DOCUMENTS</div>
           <h2 id="research-title">Assistant d’appui documentaire</h2>
-          <p>Posez une question générale sur la pneumonie communautaire, ou ajoutez un dossier patient pour rapprocher ses informations des recommandations importées.</p>
+          <p>Posez vos questions sur la pneumonie sans importer de document. Si vous ajoutez des références, l’assistant les consulte en priorité et affiche les passages utilisés.</p>
         </div>
         <span className="privacy-pill"><LockKeyhole size={15} /> {ragStatus?.remote_processing ? 'Gemini actif · envoi à Google' : 'RAG local · aucun envoi IA'}</span>
       </div>
@@ -140,8 +140,8 @@ export default function ChatPanel() {
       <div className="research-grid">
         <aside className="source-library" aria-label="Bibliothèque de recherche">
           <div className="library-title"><div className="library-icon"><BookOpen size={18} /></div><div><h3>Bibliothèque médicale</h3><small>{documents.length} {documents.length === 1 ? 'document' : 'documents'}</small></div></div>
-          <p>Ajoutez des recommandations et des documents de référence.</p>
-          <p className="rag-privacy-note">{ragStatus?.remote_processing ? `Les questions, le texte du dossier et les extraits sont envoyés à Google Gemini (${ragStatus.model}) pour la recherche et la réponse. N’utilisez aucun dossier identifiable.` : `Les questions et les extraits restent traités localement (${ragStatus?.provider || 'statut en cours'}).`}</p>
+          <p>Les documents sont facultatifs. Sans document pertinent, l’assistant répond avec les connaissances générales du modèle; avec des documents pertinents, il s’appuie sur leurs extraits.</p>
+          <p className="rag-privacy-note">{ragStatus?.remote_processing ? `Les questions, le texte du dossier et les extraits pertinents sont envoyés à Google Gemini (${ragStatus.model}) pour la recherche et la réponse. N’utilisez aucun dossier identifiable.` : `Les questions et les extraits restent traités localement (${ragStatus?.provider || 'statut en cours'}).`}</p>
           <p className="rag-privacy-note">Recherche : {ragStatus?.retrieval || 'chargement'} · Réponse : {ragStatus?.generation || 'chargement'}</p>
           <label className="upload-button">
             {uploading ? <><span className="spinner" /> Import en cours…</> : <><Plus size={17} /> Ajouter des documents</>}
@@ -156,7 +156,7 @@ export default function ChatPanel() {
                 <button type="button" className="remove-document" aria-label={`Supprimer ${document.filename}`} onClick={() => void removeDocument(document.filename)}><Trash2 size={15} /></button>
               </li>
             ))}
-            {documents.length === 0 && <li className="empty-library"><BookOpen size={22} /><span>Bibliothèque vide.<br />Ajoutez un référentiel pour commencer.</span></li>}
+            {documents.length === 0 && <li className="empty-library"><BookOpen size={22} /><span>Aucun document importé.<br />Vous pouvez déjà poser une question à l’assistant.</span></li>}
           </ul>
           <section className="case-context-card" aria-label="Contexte du dossier patient">
             <h3>Dossier patient · démonstration</h3>
@@ -177,12 +177,12 @@ export default function ChatPanel() {
 
         <div className="research-chat">
           <div className="chat-messages" aria-live="polite" aria-label="Conversation de recherche">
-            {messages.length === 0 && <div className="welcome-state"><div className="welcome-icon"><Sparkles size={23} /></div><h3>Recherche clinique documentée</h3><p>{caseContext ? 'Posez une question sur la maladie ou demandez quels passages des recommandations concernent ce dossier. Les sources et les points à vérifier seront affichés.' : documents.length ? 'Posez une question générale sur la maladie à partir des recommandations importées, ou ajoutez un dossier fictif/anonymisé pour contextualiser la recherche.' : 'Ajoutez des recommandations médicales sur la pneumonie communautaire adulte. Vous pourrez ensuite poser des questions sur la maladie, avec ou sans dossier patient.'}</p><div className="welcome-meta"><span><FileText size={14} /> Citations de sources</span><span><LockKeyhole size={14} /> {ragStatus?.remote_processing ? 'Gemini configuré' : 'Recherche locale'}</span></div></div>}
+            {messages.length === 0 && <div className="welcome-state"><div className="welcome-icon"><Sparkles size={23} /></div><h3>Posez une question sur la pneumonie</h3><p>{caseContext ? 'Posez une question générale ou demandez quels passages des références importées concernent ce dossier.' : documents.length ? 'Les passages pertinents de vos documents seront privilégiés. Si aucun ne correspond à votre question, l’assistant pourra répondre avec les connaissances générales du modèle.' : 'Aucun document à importer pour commencer : l’assistant répond avec les connaissances générales du modèle. Vous pourrez ajouter des références à tout moment pour obtenir des réponses appuyées sur leurs passages.'}</p><div className="welcome-meta"><span><FileText size={14} /> {documents.length ? 'Références importées disponibles' : 'Documents facultatifs'}</span><span><LockKeyhole size={14} /> {ragStatus?.remote_processing ? 'Gemini configuré' : `${ragStatus?.provider || 'Assistant'} configuré`}</span></div></div>}
             {messages.map((message, index) => (
               <article className={`chat-message ${message.role}`} key={`${index}-${message.role}`}>
-                <b>{message.role === 'user' ? 'Vous' : `Recherche documentaire${message.mode ? ` · ${message.mode === 'gemini_rag' ? 'Gemini' : message.mode === 'ollama_rag' ? 'Ollama local' : message.mode === 'extractive_rag' ? 'Extraits locaux' : message.mode}` : ''}`}</b>
+                <b>{message.role === 'user' ? 'Vous' : message.mode === 'gemini_rag' ? 'Réponse fondée sur vos documents · Gemini' : message.mode === 'ollama_rag' ? 'Réponse fondée sur vos documents · Ollama local' : message.mode === 'extractive_rag' ? 'Extraits de vos documents' : message.mode === 'gemini_general' ? 'Connaissances générales de l’IA · Gemini' : message.mode === 'ollama_general' ? 'Connaissances générales de l’IA · Ollama local' : message.mode === 'no_match' ? 'Réponse générale indisponible' : message.mode === 'refusal' ? 'Limite de l’assistant' : `Assistant${message.mode ? ` · ${message.mode}` : ''}`}</b>
                 <p>{message.text}</p>
-                {message.role === 'assistant' && <small>{message.retrieval_method === 'bm25_fallback' ? 'Recherche sémantique indisponible : repli BM25 local.' : message.retrieval_method === 'bm25' ? 'Recherche BM25 locale.' : ''}{message.citation_status === 'invalid' ? ' Certaines références générées ont été signalées comme non vérifiées.' : message.citation_status === 'missing' && message.mode?.endsWith('_rag') ? ' La réponse générée ne contient pas de citation vérifiable.' : ''}</small>}
+                {message.role === 'assistant' && <small>{message.mode?.endsWith('_general') ? 'Réponse issue des connaissances générales du modèle, sans document source cité. Vérifiez les recommandations locales à jour.' : ''}{message.retrieval_method === 'bm25_fallback' ? ' Recherche sémantique indisponible : repli BM25 local.' : message.retrieval_method === 'bm25' ? ' Recherche BM25 locale.' : ''}{message.citation_status === 'invalid' ? ' Certaines références générées ont été signalées comme non vérifiées.' : message.citation_status === 'missing' && message.mode?.endsWith('_rag') ? ' La réponse générée ne contient pas de citation vérifiable.' : ''}</small>}
                 {!!message.sources?.length && <details><summary>Sources citées ({message.sources.length})</summary><ol>
                   {message.sources.map((source) => <li key={source.id}><b>[{source.id}] {source.source}</b><span>{source.excerpt}</span></li>)}
                 </ol></details>}
@@ -197,10 +197,10 @@ export default function ChatPanel() {
           </div>
           <form className="chat-form" onSubmit={submit}>
             <label className="sr-only" htmlFor="chat-query">Ta question de recherche</label>
-            <textarea id="chat-query" value={query} maxLength={1000} rows={3} placeholder="Ex. Que disent les recommandations sur les facteurs de risque de cette maladie ?" onChange={(event) => setQuery(event.target.value)} />
+            <textarea id="chat-query" value={query} maxLength={1000} rows={3} placeholder="Ex. Quelles sont les causes fréquentes de pneumonie communautaire ?" onChange={(event) => setQuery(event.target.value)} />
             <button className="send-button" type="submit" disabled={busy || query.trim().length < 2} aria-label="Envoyer la question">{busy ? <span className="spinner" /> : <Send size={18} />}</button>
           </form>
-          <p className="research-disclaimer">Le chat rapproche les réponses des passages de référence; le médecin met les éléments en contexte.</p>
+          <p className="research-disclaimer">Sans document pertinent, les réponses viennent des connaissances générales du modèle. Avec des références importées, leurs passages sont cités. Le médecin vérifie et met les informations en contexte.</p>
         </div>
       </div>
     </section>
