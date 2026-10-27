@@ -1097,6 +1097,11 @@ main {
   box-shadow: 0 7px 16px rgba(35, 49, 83, .12);
 }
 
+.decision-review .actions .danger,
+.decision-review .actions .danger:hover:not(:disabled) {
+  color: #963b42 !important;
+}
+
 @media (max-width: 760px) {
   .agent {
     padding: 16px;
