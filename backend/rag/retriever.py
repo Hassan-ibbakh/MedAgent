@@ -359,11 +359,11 @@ def _gemini_answer(query: str, passages: list[dict], case_context: str = '') -> 
         return None
 
 
-def _gemini_general_answer(query: str, history: list[dict[str, str]] | None = None, case_context: str = '') -> str | None:
+def _gemini_general_answer(query: str, history: list[dict[str, str]] | None = None, case_context: str = '') -> tuple[str | None, str | None]:
     """Answer general educational questions when no imported passage is relevant."""
     model = os.getenv('OPENAI_CHAT_MODEL', '').strip()
     if not model or not os.getenv('OPENAI_API_KEY', '').strip():
-        return None
+        return None, 'Gemini model or API key is not configured'
     conversation = [
         {'role': item.get('role'), 'content': item.get('content', '')}
         for item in (history or [])[-6:]
@@ -389,15 +389,19 @@ def _gemini_general_answer(query: str, history: list[dict[str, str]] | None = No
             'messages': [{'role': 'system', 'content': system}, *conversation],
             'temperature': 0.2,
         })
-        return response['choices'][0]['message']['content'].strip() or None
-    except (HTTPError, URLError, TimeoutError, ValueError, KeyError, IndexError, TypeError):
-        return None
+        return response['choices'][0]['message']['content'].strip() or None, None
+    except HTTPError as exc:
+        return None, f'Gemini HTTP {exc.code}'
+    except (URLError, TimeoutError):
+        return None, 'Gemini connection error'
+    except (ValueError, KeyError, IndexError, TypeError):
+        return None, 'Gemini response format error'
 
 
-def _ollama_general_answer(query: str, history: list[dict[str, str]] | None = None, case_context: str = '') -> str | None:
+def _ollama_general_answer(query: str, history: list[dict[str, str]] | None = None, case_context: str = '') -> tuple[str | None, str | None]:
     model = os.getenv('OLLAMA_MODEL')
     if not model:
-        return None
+        return None, None
     conversation = [
         {'role': item.get('role'), 'content': item.get('content', '')}
         for item in (history or [])[-6:]
@@ -429,9 +433,13 @@ def _ollama_general_answer(query: str, history: list[dict[str, str]] | None = No
         with urlopen(request, timeout=30) as response:
             result = json.loads(response.read().decode('utf-8'))
         answer = result.get('message', {}).get('content', '').strip()
-        return answer or None
-    except (URLError, TimeoutError, ValueError, KeyError):
-        return None
+        return answer or None, None if answer else 'Ollama returned an empty response'
+    except HTTPError as exc:
+        return None, f'Ollama HTTP {exc.code}'
+    except (URLError, TimeoutError):
+        return None, 'Ollama connection error'
+    except (ValueError, KeyError):
+        return None, 'Ollama response format error'
 
 
 def answer_question(query: str, history: list[dict[str, str]] | None = None, case_context: str = '') -> dict:
@@ -462,19 +470,21 @@ def answer_question(query: str, history: list[dict[str, str]] | None = None, cas
         passages = retrieve(retrieval_query, chunks)
         retrieval_method = 'bm25_fallback' if use_gemini else 'bm25'
     if not passages:
-        generated = _gemini_general_answer(query, history, case_context) if use_gemini else None
+        generated, generation_error = _gemini_general_answer(query, history, case_context) if use_gemini else (None, None)
         mode = 'gemini_general' if generated else None
         generated_model = os.getenv('OPENAI_CHAT_MODEL') if generated else None
         if not generated:
-            generated = _ollama_general_answer(query, history, case_context)
+            generated, ollama_error = _ollama_general_answer(query, history, case_context)
+            generation_error = generation_error or ollama_error
             mode = 'ollama_general' if generated else None
             generated_model = os.getenv('OLLAMA_MODEL') if generated else None
+        unavailable_answer = (
+            f'Le fournisseur IA est configuré mais la réponse a échoué ({generation_error}). Vérifiez la clé, le quota, le modèle et la configuration du fournisseur.'
+            if generation_error else
+            'Aucun modèle de réponse générale n’est configuré ou disponible. Configurez Gemini/Ollama pour les questions sans document, ou importez une référence dans la bibliothèque.'
+        )
         return {
-            'answer': generated or (
-                'Les documents importes ne contiennent pas de passage pertinent et aucun modele de reponse generale '
-                'n’est configure ou disponible. Configurez Gemini/Ollama pour les questions sans document, '
-                'ou importez une reference dans la bibliotheque.'
-            ),
+            'answer': generated or unavailable_answer,
             'sources': [],
             'mode': mode or 'no_match',
             'model': generated_model,
