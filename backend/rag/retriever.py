@@ -67,6 +67,7 @@ def get_rag_status() -> dict[str, str | bool | None]:
         'provider': 'Gemini' if key else ('Ollama' if ollama_model else 'Recherche locale'),
         'model': chat_model or (os.getenv('OPENAI_EMBEDDING_MODEL', 'gemini-embedding-2-preview').strip() if key else ollama_model or None),
         'remote_processing': key,
+        'general_available': bool(chat_model or ollama_model),
         'embedding_model': os.getenv('OPENAI_EMBEDDING_MODEL', 'gemini-embedding-2-preview').strip() if key else None,
         'retrieval': 'sémantique (Gemini, avec repli BM25 local)' if key else 'BM25 local',
         'generation': 'Gemini (sources importées ou connaissances générales; repli Ollama/extraits)' if chat_model else ('Ollama local (sources importées ou connaissances générales; repli extraits)' if ollama_model else 'Extraits locaux; un fournisseur IA est nécessaire pour les réponses générales'),
