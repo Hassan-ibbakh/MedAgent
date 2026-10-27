@@ -391,11 +391,29 @@ def _gemini_general_answer(query: str, history: list[dict[str, str]] | None = No
         })
         return response['choices'][0]['message']['content'].strip() or None, None
     except HTTPError as exc:
-        return None, f'Gemini HTTP {exc.code}'
+        return None, _safe_provider_http_error('Gemini', exc)
     except (URLError, TimeoutError):
         return None, 'Gemini connection error'
     except (ValueError, KeyError, IndexError, TypeError):
         return None, 'Gemini response format error'
+
+
+def _safe_provider_http_error(provider: str, exc: HTTPError) -> str:
+    """Return a short provider diagnostic while ensuring API keys are never echoed."""
+    detail = ''
+    try:
+        payload = json.loads(exc.read(4096).decode('utf-8', errors='replace'))
+        if isinstance(payload, dict) and isinstance(payload.get('error'), dict):
+            detail = str(payload['error'].get('message') or '')
+    except (ValueError, OSError):
+        pass
+    for secret_name in ('OPENAI_API_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY'):
+        secret = os.getenv(secret_name, '').strip()
+        if secret:
+            detail = detail.replace(secret, '[clé masquée]')
+    detail = re.sub(r'AIza[0-9A-Za-z_-]{20,}', '[clé masquée]', detail)
+    detail = re.sub(r'\s+', ' ', detail).strip()[:240]
+    return f'{provider} HTTP {exc.code}' + (f': {detail}' if detail else '')
 
 
 def _ollama_general_answer(query: str, history: list[dict[str, str]] | None = None, case_context: str = '') -> tuple[str | None, str | None]:
