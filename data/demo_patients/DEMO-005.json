@@ -80,7 +80,7 @@
   ],
   "image": {
     "path": "test.png",
-    "paired_output_path": "test expl.png",
+    "paired_output_path": "test expl.jpeg",
     "synthetic": true,
     "description": "Images de démonstration associées à ce scénario fictif. Les valeurs du dossier sont synthétiques et ne sont pas les données cliniques du patient représenté sur la radiographie."
   },

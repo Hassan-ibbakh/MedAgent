@@ -12,7 +12,14 @@ from fastapi import UploadFile
 from pypdf import PdfReader
 
 ROOT = Path(__file__).resolve().parents[2]
-LIBRARY = ROOT / 'data' / 'research_library'
+# Vercel Functions have no durable local disk. Keep demo uploads in /tmp so the
+# UI can use them during the current warm instance; configure persistent object
+# storage before treating this library as durable in a published deployment.
+LIBRARY = (
+    Path('/tmp/medagent-research-library')
+    if os.getenv('VERCEL') == '1'
+    else ROOT / 'data' / 'research_library'
+)
 ALLOWED_EXTENSIONS = {'.pdf', '.md', '.txt'}
 MAX_FILE_SIZE = 20 * 1024 * 1024
 MAX_FILES = 10

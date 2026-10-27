@@ -51,7 +51,7 @@ def test_demo_flow(monkeypatch):
     assert patient['clinical']['heart_rate'] == patient['longitudinal'][-1]['heart_rate']
     assert patient['clinical']['temperature'] == patient['longitudinal'][-1]['temperature']
     assert patient['image']['path'] == 'test.png'
-    assert patient['image']['paired_output_path'] == 'test expl.png'
+    assert patient['image']['paired_output_path'] == 'test expl.jpeg'
     assert client.get('/api/artifacts/DEMO-001/gradcam.png').status_code == 200
 
 
@@ -74,7 +74,7 @@ def test_demo_radiograph_and_illustrative_heatmap_assets():
     assert image.headers['content-type'] == heatmap.headers['content-type'] == 'image/png'
     assert len(image.content) > 100_000 and len(heatmap.content) > 100_000
     assert image.content == (retriever.ROOT / 'data' / 'demo_patients' / 'test.png').read_bytes()
-    assert heatmap.content == (retriever.ROOT / 'data' / 'demo_patients' / 'test expl.png').read_bytes()
+    assert heatmap.content == (retriever.ROOT / 'data' / 'demo_patients' / 'test expl.jpeg').read_bytes()
     assert client.get('/api/demo/radiograph/unknown').status_code == 404
 
 

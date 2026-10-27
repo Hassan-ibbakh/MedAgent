@@ -4,7 +4,7 @@
 
 **0:30–1:15 — Patient.** Sélectionner un cas synthétique et parcourir les constantes cliniques. Le parcours disponible illustre l’évolution respiratoire.
 
-**1:15-2:30 - Agents.** Sélectionner `DEMO-005 · Cas synthétique associé aux images de test`, puis lancer les quatre agents. Vérifier que les constantes, la biologie et la dernière observation temporelle correspondent au même scénario fictif. L'agent d'imagerie affiche localement `test.png` et `test expl.png`, visuel associé préexistant; aucun appel à Gemini n'est effectué. Préciser que les données synthétiques ne sont pas les données confirmées du patient éventuellement représenté sur l'image.
+**1:15-2:30 - Agents.** Sélectionner `DEMO-005 · Cas synthétique associé aux images de test`, puis lancer les quatre agents. Vérifier que les constantes, la biologie et la dernière observation temporelle correspondent au même scénario fictif. L'agent d'imagerie affiche localement `test.png` et `test expl.jpeg`, visuel associé préexistant; aucun appel à Gemini n'est effectué. Préciser que les données synthétiques ne sont pas les données confirmées du patient éventuellement représenté sur l'image.
 
 **2:30–3:30 — Synthèse.** Examiner les éléments contributeurs, l’incertitude et les agents absents. Rappeler que l’indice est illustratif et qu’aucune recommandation de soins n’est produite.
 

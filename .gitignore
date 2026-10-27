@@ -10,3 +10,4 @@ frontend/dist/
 data/research_library/*
 !data/research_library/.gitkeep
 frontend/*.tsbuildinfo
+.vercel

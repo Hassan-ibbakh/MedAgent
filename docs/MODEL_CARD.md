@@ -9,7 +9,7 @@ Interface de démonstration d’un parcours d’aide à la décision clinique av
 - **Données cliniques :** règles manuelles sur les constantes vitales.
 - **Biologie :** règles manuelles sur des valeurs biologiques synthétiques.
 - **Évolution temporelle :** calcul de variations simples sur 72 heures.
-- **Imagerie :** `DEMO-005` affiche `test.png` et `test expl.png`, une image associée préexistante. Cette association est uniquement destinée à la démonstration; les données cliniques synthétiques ne sont pas des données confirmées du patient sur la radiographie. Aucune analyse automatisée ou transmission à un modèle n'est effectuée pour cette paire. Une image téléversée manuellement peut être envoyée à un fournisseur multimodal après consentement explicite, mais le modèle généraliste n'est pas validé en radiologie.
+- **Imagerie :** `DEMO-005` affiche `test.png` et `test expl.jpeg`, une image associée préexistante. Cette association est uniquement destinée à la démonstration; les données cliniques synthétiques ne sont pas des données confirmées du patient sur la radiographie. Aucune analyse automatisée ou transmission à un modèle n'est effectuée pour cette paire. Une image téléversée manuellement peut être envoyée à un fournisseur multimodal après consentement explicite, mais le modèle généraliste n'est pas validé en radiologie.
 
 Les trois agents disponibles n’ont pas été entraînés sur des données cliniques. Leurs indices et leur synthèse utilisent des seuils illustratifs, sans calibration ni validation sur une cohorte. Ils ne constituent pas une prédiction ou une recommandation médicale.
 

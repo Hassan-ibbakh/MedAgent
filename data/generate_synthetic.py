@@ -47,7 +47,7 @@ def main():
     image_case['demographics']['sex']='Non précisé'
     image_case['image']={
         'path':'test.png',
-        'paired_output_path':'test expl.png',
+        'paired_output_path':'test expl.jpeg',
         'description':'Images de démonstration associées à ce scénario fictif. Les valeurs du dossier sont synthétiques et ne sont pas les données cliniques du patient représenté sur la radiographie.',
     }
     image_case['report']='Scénario entièrement synthétique pour démontrer le parcours des quatre agents. Les images associées sont des ressources de test et ne valident pas les données du dossier.'

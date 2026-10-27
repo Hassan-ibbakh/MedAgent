@@ -80,16 +80,16 @@ def artifact(pid:str):
 def demo_radiograph(kind:str):
     # Fixed allow-list: the original image and its precomputed illustrative overlay.
     files={
-        'image':('test.png','radiographie-demo.png'),
-        'heatmap':('test expl.png','carte-chaleur-illustrative.png'),
+        'image':('test.png','image/png'),
+        'heatmap':('test expl.jpeg','image/jpeg'),
     }
     if kind not in files:
         raise HTTPException(404,'Visuel de démonstration introuvable')
-    source,download_name=files[kind]
+    source,media_type=files[kind]
     path=ROOT/'data'/'demo_patients'/source
     if not path.is_file():
         raise HTTPException(404,'Visuel de démonstration introuvable')
-    return FileResponse(path,media_type='image/png',filename=download_name)
+    return FileResponse(path,media_type=media_type)
 
 @app.post('/api/decisions')
 def decide(body:DecisionInput):
@@ -149,3 +149,10 @@ def remove_research_document(filename:str):
     except ValueError as exc:
         raise HTTPException(400,str(exc)) from exc
     return {'documents':list_documents()}
+
+# Vercel builds the Vite application before bundling this FastAPI app. FastAPI's
+# frontend integration serves the SPA from the CDN and falls back to index.html
+# for client-side routes; local development continues to use the Vite dev server.
+FRONTEND_DIST = ROOT / 'frontend' / 'dist'
+if FRONTEND_DIST.is_dir():
+    app.frontend('/', directory=FRONTEND_DIST, fallback='index.html')

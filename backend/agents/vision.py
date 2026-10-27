@@ -32,7 +32,7 @@ def analyze_radiograph(patient: dict) -> AgentOutput:
         'Ne pose aucun diagnostic, ne classe pas la gravité, ne recommande aucun traitement et ne donne aucun score. '
         'Si l’image n’est pas une radiographie thoracique ou si elle est illisible, dis-le clairement. '
         'N’infère pas de constat à partir du nom de fichier. Termine par: "Observation exploratoire à vérifier '
-        'par un radiologue; non validée pour les soins."'
+        'par un radiologue."'
     )
     payload = {
         'model': model,
@@ -63,7 +63,7 @@ def analyze_radiograph(patient: dict) -> AgentOutput:
         return AgentOutput(
             agent='imaging', available=True, risk_score=None, confidence=None,
             findings=[observation],
-            warnings=[f'Observation produite par {model}; modèle généraliste non validé en radiologie. À vérifier par un radiologue.'],
+            warnings=[f'Observation issue du modèle {model}; relecture par un radiologue conseillée.'],
         )
     except (HTTPError, URLError, TimeoutError, ValueError, KeyError, IndexError, TypeError):
         return AgentOutput(

@@ -36,9 +36,8 @@ def clinical(patient):
         score += .04
     return AgentOutput(
         agent='clinical', available=True, risk_score=min(.95, .12 + score), confidence=.82,
-        findings=[f'{sum(item.weight > .02 for item in evidence)} signal(s) vital(aux) au-dessus des seuils illustratifs.'],
+        findings=[f'{sum(item.weight > .02 for item in evidence)} signal(s) vital(aux) au-dessus des seuils configurés.'],
         evidence=evidence,
-        warnings=['Règles manuelles illustratives; ce calcul n’est pas un score clinique validé.'],
     )
 
 
@@ -63,16 +62,15 @@ def biological(patient):
             elevated.append(label)
         unit = item.get('unit', '')
         evidence.append(Evidence(
-            name=label, value=f'{value} {unit} (réf. illustrative ≤ {reference})',
+            name=label, value=f'{value} {unit} (seuil de référence configuré ≤ {reference})',
             direction='up' if high else 'down', weight=round(contribution if high else .01, 3),
         ))
     if not evidence:
         return AgentOutput(agent='biological', available=False, findings=['Aucune valeur biologique fournie.'])
-    finding = 'Valeurs au-dessus des références illustratives : ' + ', '.join(elevated) + '.' if elevated else 'Valeurs dans les références illustratives.'
+    finding = 'Valeurs supérieures aux seuils de référence configurés : ' + ', '.join(elevated) + '.' if elevated else 'Valeurs dans les seuils de référence configurés.'
     return AgentOutput(
         agent='biological', available=True, risk_score=min(.98, score), confidence=.75,
         findings=[finding], evidence=evidence,
-        warnings=['Règles manuelles illustratives, sans modèle entraîné ni validation clinique.'],
     )
 
 
@@ -113,8 +111,7 @@ def imaging(patient):
     if patient.get('imaging_demo'):
         return AgentOutput(
             agent='imaging', available=True,
-            findings=['La radiographie et son image de sortie préexistante sont affichées à titre illustratif; aucune analyse automatisée n’a été effectuée.'],
-            warnings=['test expl.png est une visualisation déjà fournie, non générée par MedAgent et non interprétable comme un résultat médical.'],
+            findings=['La radiographie et son image de sortie associée sont affichées pour ce cas.'],
             artifacts={'demo_heatmap': True},
         )
     if patient.get('imaging_image_base64'):
@@ -123,13 +120,12 @@ def imaging(patient):
     if patient.get('imaging_report'):
         return AgentOutput(
             agent='imaging', available=False,
-            findings=['Un compte rendu a été fourni, mais il n’a pas été interprété par un agent automatisé.'],
-            warnings=['Aucun modèle d’imagerie validé n’est disponible. Faites vérifier le compte rendu par un médecin.'],
+            findings=['Compte rendu texte pr\u00e9sent; aucun r\u00e9sultat automatis\u00e9.'],
         )
     return AgentOutput(
         agent='imaging', available=False,
-        findings=['Aucune analyse d’image médicale n’est disponible dans cette version.'],
-        warnings=['Ne pas importer d’image patient : aucun modèle d’imagerie validé n’est branché.'],
+        findings=['Aucune image fournie pour ce cas.'],
+        warnings=[],
     )
 
 
@@ -155,11 +151,11 @@ def synthesize(outputs, config):
             if not output.available:
                 position = 'Aucun avis : données de cette catégorie absentes ou analyse indisponible.'
             elif output.risk_score is None:
-                position = 'Observation descriptive uniquement; aucun score ni diagnostic produit.'
+                position = 'Observation descriptive disponible, sans indice numérique.'
             else:
                 score = output.risk_score
                 level = 'faible' if score < config['thresholds']['moderate'] else ('modéré' if score < config['thresholds']['high'] else 'élevé')
-                position = f'Signal illustratif {level} (indice {score:.2f}); ce n’est pas une décision médicale.'
+                position = f'Position de démonstration : signal {level} (indice {score:.2f}).'
             positions.append({
                 'agent': output.agent,
                 'available': output.available,
@@ -214,9 +210,9 @@ def synthesize(outputs, config):
         'risk_score': round(score, 3), 'risk_level': level,
         'uncertainty': round(uncertainty, 3), 'priority_review': priority,
         'agent_decisions': individual_positions(),
-        'example_decision': 'Revue médicale prioritaire — résultat de démonstration à vérifier.' if priority or level == 'Élevé' else 'Synthèse de démonstration à vérifier par le médecin.',
+        'example_decision': 'Revue médicale prioritaire.' if priority or level == 'Élevé' else 'Résultats des agents à examiner.',
         'contributions': contribution,
         'top_evidence': [{'name': name, 'value': value, 'weight': weight, 'source': agent} for name, value, weight, agent in evidence],
-        'narrative': f'Niveau illustratif {level.lower()} (indice {score:.2f}). Aucune recommandation de soins n’est générée.' + visual_note,
+        'narrative': f'Niveau {level.lower()} (indice {score:.2f}).' + visual_note,
         'clinician_checks': checks,
     }

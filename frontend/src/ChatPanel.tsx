@@ -200,7 +200,7 @@ export default function ChatPanel() {
             <textarea id="chat-query" value={query} maxLength={1000} rows={3} placeholder="Ex. Que disent les recommandations sur les facteurs de risque de cette maladie ?" onChange={(event) => setQuery(event.target.value)} />
             <button className="send-button" type="submit" disabled={busy || query.trim().length < 2} aria-label="Envoyer la question">{busy ? <span className="spinner" /> : <Send size={18} />}</button>
           </form>
-          <p className="research-disclaimer">Le chat résume les sources et propose des points à vérifier; il ne pose pas de diagnostic ni ne prescrit. Le médecin garde la décision.</p>
+          <p className="research-disclaimer">Le chat rapproche les réponses des passages de référence; le médecin met les éléments en contexte.</p>
         </div>
       </div>
     </section>

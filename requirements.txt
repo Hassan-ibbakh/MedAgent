@@ -1,0 +1,5 @@
+fastapi>=0.117.1,<1
+pydantic>=2.6,<3
+Pillow>=10
+pypdf>=5.0
+python-multipart>=0.0.9

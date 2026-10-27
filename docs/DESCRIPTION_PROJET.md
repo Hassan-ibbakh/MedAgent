@@ -32,7 +32,7 @@ Chaque catégorie est traitée par l’agent correspondant. Les catégories abse
 1. **Agent clinique** : applique des seuils codés à la main aux constantes disponibles.
 2. **Agent biologique** : compare certaines valeurs de laboratoire à des seuils illustratifs.
 3. **Agent temporel** : calcule les variations entre observations, par exemple sur plusieurs heures.
-4. **Agent d'imagerie** : le cas complet `DEMO-005` associe les valeurs cliniques, biologiques et temporelles d'un scénario synthétique unique aux images locales `test.png` (entrée) et `test expl.png` (visuel associé déjà fourni). Cette association sert au test de l'interface; elle ne prétend pas que les valeurs fictives appartiennent au patient réel représenté sur l'image. Aucun fichier de cette paire n'est envoyé à Gemini. Une image téléversée manuellement peut être envoyée après consentement explicite pour une observation descriptive exploratoire, sans score ni diagnostic.
+4. **Agent d'imagerie** : le cas complet `DEMO-005` associe les valeurs cliniques, biologiques et temporelles d'un scénario synthétique unique aux images locales `test.png` (entrée) et `test expl.jpeg` (visuel associé déjà fourni). Cette association sert au test de l'interface; elle ne prétend pas que les valeurs fictives appartiennent au patient réel représenté sur l'image. Aucun fichier de cette paire n'est envoyé à Gemini. Une image téléversée manuellement peut être envoyée après consentement explicite pour une observation descriptive exploratoire, sans score ni diagnostic.
 
 Les trois premiers agents utilisent des règles simples. Aucun de ces agents ne correspond à un modèle entraîné ou validé cliniquement.
 
