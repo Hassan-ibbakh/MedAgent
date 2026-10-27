@@ -1,4 +1,4 @@
-import base64, json, uuid
+import base64, json, re, uuid
 from io import BytesIO
 from datetime import datetime, timezone
 from pathlib import Path
@@ -16,7 +16,7 @@ ROOT=Path(__file__).resolve().parents[2]
 CONFIG=json.loads((ROOT/'config.yaml').read_text(encoding='utf-8'))
 app=FastAPI(title='MedAgent — prototype de démonstration',version='0.1.0')
 app.add_middleware(CORSMiddleware,allow_origins=['http://localhost:5173','http://127.0.0.1:5173'],allow_methods=['*'],allow_headers=['*'])
-decisions=[]; analyses={}
+decisions=[]
 def load(pid):
     if not isinstance(pid,str) or len(pid)!=8 or not pid.startswith('DEMO-') or not pid[5:].isdigit():
         raise HTTPException(404,'Patient démo introuvable')
@@ -62,7 +62,6 @@ def analyze_manual(body:ManualAnalysisInput):
             'input_mode':'manual_demo',
         },
     }
-    analyses[result['analysis_id']]=result
     return result
 
 @app.post('/api/analyze/{pid}')
@@ -70,7 +69,7 @@ def analyze(pid:str):
     p=load(pid)
     p['imaging_demo']=pid == 'DEMO-005'
     start=datetime.now(timezone.utc); data,agent_times=run_agents(p,with_timings=True); result={'analysis_id':str(uuid.uuid4()),'patient_id':pid,'agents':[o.model_dump() for o in data],'synthesis':synthesize(data,CONFIG),'trace':{'created_at':start.isoformat(),'duration_ms':round((datetime.now(timezone.utc)-start).total_seconds()*1000,2),'agent_duration_ms':agent_times,'versions':{'medagent':'0.1.0'},'parameters':CONFIG}}
-    analyses[result['analysis_id']]=result; return result
+    return result
 
 @app.get('/api/artifacts/{pid}/gradcam.png')
 def artifact(pid:str):
@@ -93,7 +92,18 @@ def demo_radiograph(kind:str):
 
 @app.post('/api/decisions')
 def decide(body:DecisionInput):
-    if body.analysis_id not in analyses or analyses[body.analysis_id]['patient_id']!=body.patient_id: raise HTTPException(404,'Analyse introuvable pour ce patient')
+    # Vercel may route the analysis and decision requests to different function
+    # instances, so an in-memory analysis registry cannot validate this flow.
+    # Validate the demo case identifier and generated UUID without that cache.
+    if not re.fullmatch(r'[A-Za-z0-9_-]{1,32}',body.patient_id):
+        raise HTTPException(404,'Dossier de démonstration introuvable')
+    if body.patient_id.startswith('DEMO-'):
+        load(body.patient_id)
+    try:
+        if str(uuid.UUID(body.analysis_id)) != body.analysis_id:
+            raise ValueError('UUID non canonique')
+    except (ValueError, TypeError, AttributeError) as exc:
+        raise HTTPException(404,'Identifiant d’analyse invalide') from exc
     row={**body.model_dump(),'timestamp':datetime.now(timezone.utc).isoformat()}; decisions.append(row); return row
 @app.get('/api/audit/{pid}')
 def audit(pid:str): load(pid); return [d for d in decisions if d['patient_id']==pid]

@@ -242,7 +242,7 @@ export default function App() {
       });
       if (!response.ok) throw new Error();
       setReviewed(true);
-      setMessage(decision === 'accept' ? 'Validation médicale enregistrée.' : decision === 'modify' ? 'Décision modifiée par le médecin et enregistrée.' : 'Synthèse rejetée par le médecin et enregistrée.');
+      setMessage(decision === 'accept' ? 'Validation médicale prise en compte pour la démonstration.' : decision === 'modify' ? 'Décision modifiée prise en compte pour la démonstration.' : 'Rejet pris en compte pour ce cas de démonstration.');
     } catch { setMessage('La décision n’a pas pu être enregistrée.'); }
     finally { setSavingDecision(null); }
   }
@@ -297,7 +297,7 @@ export default function App() {
           <div className="review-disclaimer"><ShieldCheck size={17}/><span>La synthèse ne prend pas de décision à la place du médecin. Vérifiez les données du dossier.</span></div>
           {result.synthesis.risk_score === null ? <><div className="no-result-note"><CircleAlert size={16}/> Aucun indice global n’est disponible. Consultez les résultats individuels des agents.</div><button type="button" className="secondary return-entry" onClick={()=>{setResult(null);setReviewed(false);}}>Retourner à la saisie</button></> : <>
             <label htmlFor="review-comment">Commentaire médical <span>(facultatif)</span></label><textarea id="review-comment" value={reviewComment} maxLength={1000} rows={3} placeholder="Notez votre interprétation, les modifications ou les éléments à revoir…" onChange={(event) => { setReviewComment(event.target.value); setReviewed(false); }}/>
-            {reviewed ? <div className="review-confirmation"><Check size={17}/> Votre décision a été enregistrée dans le journal de suivi.</div> : <div className="actions"><button type="button" disabled={savingDecision !== null} onClick={() => void decide('accept')}><Check size={16}/> {savingDecision === 'accept' ? 'Enregistrement…' : 'Valider la synthèse'}</button><button type="button" className="secondary" disabled={savingDecision !== null} onClick={() => void decide('modify')}>{savingDecision === 'modify' ? 'Enregistrement…' : 'Modifier la décision'}</button><button type="button" className="danger" disabled={savingDecision !== null} onClick={() => void decide('reject')}>{savingDecision === 'reject' ? 'Enregistrement…' : 'Rejeter la synthèse'}</button></div>}
+            {reviewed ? <div className="review-confirmation"><Check size={17}/> Décision prise en compte pour ce cas de démonstration.</div> : <div className="actions"><button type="button" disabled={savingDecision !== null} onClick={() => void decide('accept')}><Check size={16}/> {savingDecision === 'accept' ? 'Enregistrement…' : 'Valider la synthèse'}</button><button type="button" className="secondary" disabled={savingDecision !== null} onClick={() => void decide('modify')}>{savingDecision === 'modify' ? 'Enregistrement…' : 'Modifier la décision'}</button><button type="button" className="danger" disabled={savingDecision !== null} onClick={() => void decide('reject')}>{savingDecision === 'reject' ? 'Enregistrement…' : 'Rejeter la synthèse'}</button></div>}
           </>}
         </section>
       </>}

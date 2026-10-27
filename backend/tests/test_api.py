@@ -1,5 +1,6 @@
 import base64
 import json
+import uuid
 
 from fastapi.testclient import TestClient
 
@@ -65,6 +66,15 @@ def test_errors_and_decision(monkeypatch):
     })
     assert saved.status_code == 200
     assert client.get('/api/audit/DEMO-005').json()[-1]['decision'] == 'accept'
+
+
+def test_decision_does_not_depend_on_process_local_analysis_cache():
+    saved = client.post('/api/decisions', json={
+        'analysis_id': str(uuid.uuid4()), 'patient_id': 'DEMO-005',
+        'decision': 'reject', 'comment': 'Simuler une instance serverless distincte.',
+    })
+    assert saved.status_code == 200
+    assert saved.json()['decision'] == 'reject'
 
 
 def test_demo_radiograph_and_illustrative_heatmap_assets():
