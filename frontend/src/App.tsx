@@ -1,11 +1,11 @@
 import { type FormEvent, useEffect, useState } from 'react';
-import { Activity, ArrowRight, BookOpen, Check, CircleAlert, ClipboardCheck, FileImage, FileText, FlaskConical, HeartPulse, ShieldCheck } from 'lucide-react';
+import { Activity, ArrowRight, BookOpen, Check, CircleAlert, ClipboardCheck, Database, FileImage, FileSearch, FlaskConical, GitBranch, HeartPulse, MessageCircle, ShieldCheck, Stethoscope } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import ChatPanel from './ChatPanel';
 
 type Patient = { id: string; label: string; demographics: any; clinical: any; biological: any; longitudinal: any[] };
 type Result = { analysis_id: string; patient_id: string; agents: any[]; synthesis: any; trace: any };
-type View = 'home' | 'clinical' | 'references';
+type View = 'home' | 'clinical' | 'references' | 'process';
 type EntryMode = 'demo' | 'manual';
 const api = '/api';
 const agentNames: Record<string, string> = {
@@ -130,7 +130,7 @@ function ManualIntake({ busy, onAnalyze }: { busy: boolean; onAnalyze: (payload:
   </form>;
 }
 
-function LandingPage({ onOpenAnalysis, onOpenReferences }: { onOpenAnalysis: () => void; onOpenReferences: () => void }) {
+function LandingPage({ onOpenAnalysis, onOpenReferences, onOpenProcess }: { onOpenAnalysis: () => void; onOpenReferences: () => void; onOpenProcess: () => void }) {
   return <div className="landing-page">
     <section className="landing-hero" aria-labelledby="landing-title">
       <div className="hero-copy">
@@ -138,7 +138,7 @@ function LandingPage({ onOpenAnalysis, onOpenReferences }: { onOpenAnalysis: () 
         <h1 id="landing-title">Mieux relier les données. Garder la décision au médecin.</h1>
         <p className="hero-lede">MedAgent présente un parcours de revue clinique où plusieurs sources de données et références médicales peuvent être examinées ensemble, avec le médecin au centre.</p>
         <div className="hero-actions">
-          <button className="hero-primary" onClick={onOpenAnalysis}>Découvrir la démonstration <ArrowRight size={17}/></button>
+          <button className="hero-primary" onClick={onOpenProcess}>Comment fonctionne MedAgent <ArrowRight size={17}/></button>
           <button className="hero-secondary" onClick={onOpenReferences}><BookOpen size={16}/> Explorer l’assistant documentaire</button>
         </div>
         <div className="hero-assurance"><ShieldCheck size={17}/><span>Parcours conçu pour rendre visibles les sources, limites et étapes de revue.</span></div>
@@ -166,6 +166,51 @@ function LandingPage({ onOpenAnalysis, onOpenReferences }: { onOpenAnalysis: () 
     <section className="landing-scope" id="perimetre"><div className="scope-symbol"><FlaskConical size={22}/></div><div><span className="landing-eyebrow">PÉRIMÈTRE DE LA DÉMONSTRATION</span><h2>Pneumonie communautaire chez l’adulte</h2><p>Un domaine clinique ciblé pour parcourir les quatre agents et la revue du médecin.</p></div><button onClick={onOpenReferences}>Voir l’assistant documentaire <ArrowRight size={16}/></button></section>
     <section className="landing-disclaimer"><ShieldCheck size={17}/><p><b>Démonstration éducative.</b> Le parcours présente quatre agents autour d’un cas de pneumonie communautaire adulte.</p></section>
   </div>;
+}
+
+function HowItWorksPage({ onOpenAnalysis, onOpenReferences }: { onOpenAnalysis: () => void; onOpenReferences: () => void }) {
+  const agents = [
+    { icon: <Stethoscope size={19}/>, title: 'Données cliniques', text: 'Constantes vitales et éléments cliniques disponibles dans le dossier.' },
+    { icon: <FlaskConical size={19}/>, title: 'Biologie', text: 'Résultats de laboratoire, avec leurs valeurs et unités.' },
+    { icon: <FileImage size={19}/>, title: 'Imagerie', text: 'Images et observations radiologiques, selon les capacités activées.' },
+    { icon: <Activity size={19}/>, title: 'Évolution temporelle', text: 'Mesures successives pour rendre visibles les changements au fil du temps.' },
+  ];
+  const steps = [
+    { number: '01', title: 'Rassembler les informations', text: 'Le médecin sélectionne un dossier ou saisit les données disponibles par catégorie : clinique, biologie, imagerie et évolution. Les catégories absentes restent signalées comme telles.' },
+    { number: '02', title: 'Analyser chaque catégorie', text: 'Quatre agents examinent les informations de leur domaine. Chaque sortie présente les observations et les éléments qui l’étayent, pour faciliter leur vérification.' },
+    { number: '03', title: 'Mettre les résultats en regard', text: 'La synthèse rapproche les résultats disponibles, souligne les points de vigilance et rend visibles les données manquantes ou les divergences.' },
+    { number: '04', title: 'Consulter les références', text: 'L’assistant documentaire recherche dans les ressources ajoutées, restitue des passages pertinents et indique les sources à consulter.' },
+    { number: '05', title: 'Décider en tant que médecin', text: 'Le médecin examine le dossier et les résultats, puis valide, modifie ou rejette la synthèse en ajoutant éventuellement un commentaire.' },
+  ];
+
+  return <main className="process-page">
+    <section className="process-hero">
+      <div className="process-eyebrow"><GitBranch size={15}/> DU DOSSIER À LA DÉCISION</div>
+      <h1>Comment fonctionne MedAgent ?</h1>
+      <p>MedAgent organise les informations cliniques en plusieurs analyses complémentaires, les relie aux références disponibles et présente les éléments au médecin pour revue.</p>
+      <div className="process-hero-actions">
+        <button className="process-primary" onClick={onOpenAnalysis}>Ouvrir le parcours clinique <ArrowRight size={16}/></button>
+        <button className="process-secondary" onClick={onOpenReferences}><BookOpen size={16}/> Consulter l’assistant documentaire</button>
+      </div>
+    </section>
+
+    <section className="process-agents" aria-labelledby="agents-title">
+      <div className="process-section-heading"><span>ANALYSES SPÉCIALISÉES</span><h2 id="agents-title">Quatre agents, quatre types d’informations</h2><p>Chaque agent traite sa catégorie séparément. La synthèse s’appuie sur les résultats réellement disponibles.</p></div>
+      <div className="process-agent-grid">{agents.map((agent, index) => <article key={agent.title}><div className="process-agent-icon">{agent.icon}</div><small>AGENT 0{index + 1}</small><h3>{agent.title}</h3><p>{agent.text}</p></article>)}</div>
+    </section>
+
+    <section className="process-steps-section" aria-labelledby="steps-title">
+      <div className="process-section-heading"><span>LE PARCOURS</span><h2 id="steps-title">Des données à la revue médicale</h2><p>La progression reste lisible à chaque étape : les entrées, les résultats et la décision humaine.</p></div>
+      <div className="process-steps-list">{steps.map((step) => <article key={step.number}><span className="process-step-number">{step.number}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></article>)}</div>
+    </section>
+
+    <section className="process-support-grid">
+      <article><div className="process-support-icon"><Database size={19}/></div><div><h3>Une synthèse explicable</h3><p>Les résultats sont accompagnés de leurs éléments contributifs. Le médecin peut revenir aux données sources et distinguer les catégories présentes de celles qui manquent.</p></div></article>
+      <article><div className="process-support-icon"><FileSearch size={19}/></div><div><h3>Un assistant relié aux sources</h3><p>Le chat répond aux questions à partir des documents de référence ajoutés et affiche les extraits retrouvés pour vérification.</p></div></article>
+    </section>
+
+    <section className="process-clinician-note"><div><MessageCircle size={20}/></div><p><strong>La décision clinique appartient au médecin.</strong><br/>MedAgent structure les informations et facilite leur examen; il ne remplace ni l’évaluation clinique ni la validation du professionnel.</p></section>
+  </main>;
 }
 
 function LayersIcon() {
@@ -254,11 +299,12 @@ export default function App() {
         <button className={view === 'home' ? 'active' : ''} onClick={() => { setView('home'); setMessage(''); }}>Accueil</button>
         <button className={view === 'clinical' ? 'active' : ''} onClick={() => { setView('clinical'); setMessage(''); }}>Parcours médecin</button>
         <button className={view === 'references' ? 'active' : ''} onClick={() => { setView('references'); setMessage(''); }}>Assistant documentaire</button>
+        <button className={view === 'process' ? 'active' : ''} onClick={() => { setView('process'); setMessage(''); }}>Comment fonctionne MedAgent</button>
       </nav>
-      <button className="nav-cta" onClick={() => { setView('clinical'); setMessage(''); }}>Ouvrir la démonstration <ArrowRight size={15}/></button>
+      <button className="nav-cta" onClick={() => { setView('clinical'); setMessage(''); }}>Ouvrir le parcours clinique <ArrowRight size={15}/></button>
     </header>
     {view !== 'home' && message && <p role="status" className="status">{message}</p>}
-    {view === 'home' ? <LandingPage onOpenAnalysis={() => { setMessage(''); setView('clinical'); }} onOpenReferences={() => { setMessage(''); setView('references'); }} /> : view === 'references' ? <ChatPanel /> : <>
+    {view === 'home' ? <LandingPage onOpenAnalysis={() => { setMessage(''); setView('clinical'); }} onOpenReferences={() => { setMessage(''); setView('references'); }} onOpenProcess={() => { setMessage(''); setView('process'); }} /> : view === 'references' ? <ChatPanel /> : view === 'process' ? <HowItWorksPage onOpenAnalysis={() => { setMessage(''); setView('clinical'); }} onOpenReferences={() => { setMessage(''); setView('references'); }} /> : <>
       <div className="clinical-intro"><div><div className="eyebrow"><HeartPulse size={15} /> PARCOURS CLINIQUE</div><h2>Analyse multidisciplinaire</h2><p>Quatre agents examinent des sources de données différentes. Le médecin garde la décision finale.</p></div><span className="clinical-scope"><FlaskConical size={15} /> Pathologie ciblée : pneumonie communautaire adulte</span></div>
       <div className="warning"><ShieldCheck size={16} /><span>Cas de démonstration · données de synthèse.</span></div>
       {entryMode === 'demo' && <div className="demo-image-consent"><span className="demo-source-icon"><FileImage size={18}/></span><span><b>{pid === 'DEMO-005' ? 'Cas complet associé aux images de test' : 'Dossier de démonstration synthétique'}</b>{pid === 'DEMO-005' ? 'Les fichiers test.png et test expl.jpeg sont associés à ce cas pour la démonstration des quatre agents.' : 'Choisissez DEMO-005 pour parcourir les quatre agents avec les images associées.'}</span></div>}
@@ -304,7 +350,7 @@ export default function App() {
     </>}
     <footer className="site-footer">
       <div className="footer-main"><div className="footer-brand"><div className="brand-mark"><img src="/logo.png" alt="" /></div><div><b>MEDAGENT</b><span>Revue clinique multidisciplinaire</span></div></div><p>Une démonstration d’aide à la décision médicale centrée sur la transparence des sources et la supervision du médecin.</p></div>
-      <div className="footer-links"><span>EXPLORER</span><button onClick={() => { setView('home'); setMessage(''); }}>Accueil</button><button onClick={() => { setView('clinical'); setMessage(''); }}>Parcours médecin</button><button onClick={() => { setView('references'); setMessage(''); }}>Assistant documentaire</button></div>
+      <div className="footer-links"><span>EXPLORER</span><button onClick={() => { setView('home'); setMessage(''); }}>Accueil</button><button onClick={() => { setView('clinical'); setMessage(''); }}>Parcours médecin</button><button onClick={() => { setView('references'); setMessage(''); }}>Assistant documentaire</button><button onClick={() => { setView('process'); setMessage(''); }}>Comment fonctionne MedAgent</button></div>
       <div className="footer-bottom"><span>© {new Date().getFullYear()} MedAgent · Démonstration éducative</span><span><ShieldCheck size={14}/> Données de démonstration</span></div>
     </footer>
   </main>;
