@@ -1102,6 +1102,48 @@ main {
   color: #963b42 !important;
 }
 
+/* Keep informational and caution states within the indigo clinical palette. */
+.warning {
+  color: #4d5f91 !important;
+  background: #f1f4fc !important;
+  border-color: #dce4f4 !important;
+}
+
+.warning svg {
+  color: #6174bd;
+}
+
+.agent-warning {
+  color: #59688d !important;
+  background: #f2f5fc !important;
+}
+
+.synthesis-panel .priority {
+  color: #5b61a4 !important;
+  background: #f1f2ff !important;
+  border-color: #dfe2fb !important;
+}
+
+.landing-disclaimer {
+  color: #64718c !important;
+  background: #f4f6fb !important;
+  border-color: #e1e6f1 !important;
+}
+
+.landing-disclaimer b,
+.landing-disclaimer svg {
+  color: #5969ad !important;
+}
+
+.value-icon.amber {
+  color: #5a69d4 !important;
+  background: #eef0ff !important;
+}
+
+.footer-bottom svg {
+  color: #7786bd !important;
+}
+
 @media (max-width: 760px) {
   .agent {
     padding: 16px;
